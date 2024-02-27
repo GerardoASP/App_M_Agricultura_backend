@@ -4,7 +4,11 @@ const farmSchema = mongoose.Schema({
     lineFarm : {type:String, require:true},
     area: { type: Number, require: true},
     predialValue: { type: Number, require: true},
-    services: { type: [String], required: true }
+    services: { type: [String], required: true },
+    farmUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    }
 })
 
-module.exports = ("Farm",farmSchema);
+module.exports = mongoose.model("Farm",farmSchema);
