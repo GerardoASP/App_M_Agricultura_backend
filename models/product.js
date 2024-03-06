@@ -8,6 +8,15 @@ const productSchema = mongoose.Schema({
     preHarvestTime: { type: Number, require: true },
     weight: { type: Number, require: true},
     volume: { type: Number, require: true},
+    date_sowing:{type:Date, require:true},
+    productLots: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'lot'
+    }],
+    productSales: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'sale'
+    }]
 })
 
-module.exports = ("Product",productSchema);
+module.exports = mongoose.model("Product",productSchema);
