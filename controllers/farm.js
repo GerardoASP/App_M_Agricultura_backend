@@ -62,7 +62,7 @@ const removeFarm = async(req, res)=>{
         const {id} = req.params;
         const farmDelete = await modelFarm.findByIdAndDelete(id)
         if(farmDelete === null) {
-            return res.status(404).json({message: "User not found"});
+            return res.status(404).json({message: "Farm not found"});
         }
         return res.status(204).json();
     }catch(error){

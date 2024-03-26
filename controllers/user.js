@@ -1,20 +1,31 @@
 const express = require('express');
 const modelUser = require('../models/user');
+const bcrypt = require('bcrypt');
 
 /* CRUD */
 
 /*Crear un gasto en la base de datos*/
-const createUser = async (req, res)=>{
-    try{
-        const {firstname,lastname,email,phone,password,document_type,document} = req.body;
-        // console.log(req.body);
-        const newUser = new modelUser({firstname,lastname,email,phone,password,document_type,document});
-        // console.log(newPost);
+const createUser = async (req, res) => {
+    try {
+        const { firstname, lastname, email, phone, password, document_type, document } = req.body;
+
+        // Generar un hash de la contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new modelUser({
+            firstname,
+            lastname,
+            email,
+            phone,
+            password: hashedPassword, // Guardar la contraseña cifrada
+            document_type,
+            document
+        });
+
         const savedUser = await newUser.save();
-        // res.status(201).json({message: "Post created"});
         return res.status(201).json(savedUser);
-    }catch(error){
-        return res.status(400).json({message: error.message});
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
 }
 
