@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("../utils/jwt");
+const crypto = require('crypto');
+const { transporter } = require("../config/emailService");
+const sms = require("../config/sms")
 
 //registro de un usuario nuevo en el sistema
 const register = async (req, res) => {
@@ -22,6 +25,9 @@ const register = async (req, res) => {
     const hashPassword = bcrypt.hashSync(password, salt);
 
     //const hashPassword = await bcrypt.hash(password,salt);
+    const token = crypto.randomBytes(64).toString('hex');
+    const generateRandomCode = () => Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    const verifyCode = generateRandomCode();
 
     const user = new User({
         firstname,
@@ -31,29 +37,45 @@ const register = async (req, res) => {
         document,
         email: email.toLowerCase(),
         password: hashPassword,
-        active: false
+        active: false,
+        verifyCode
     });
 
     try {
         const userStorage = await user.save();
-        res.status(201).send(userStorage);  
+        res.status(201).send(userStorage);
+        let mailOptions = {
+            from: process.env.EMAIL_MAILER,
+            to: process.env.EMAIL_MAILER,
+            subject: 'Verifica la cuenta del usuario',
+            html: `El usuario ${user.firstname} ${user.lastname} con telefono ${user.phone}, se acaba de registrar en AmigoVillAgro. Revisa la aplicación para verificar la cuenta`
+        };
+        // Send the email
+       transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+        sms.sendSMS(user.phone);
+    });
     } catch (error) {
         res.status(400).send({ msg: "Error al crear el usuario", error: error.message || "Error desconocido" });
     }
 };
 
 const login = async (req, res) => {
-    const {email, password} = req.body;
+    const {phone, password} = req.body;
 
     try {
         if (!password) {
             throw new Error("la contraseña es obligatoria");
         }
-        if(!email){
-            throw new Error("El email es obligatorio");
+        if(!phone){
+            throw new Error("El numero de telefono es obligatorio");
         }
-        const emailLowerCase = email.toLowerCase();
-        const userStore = await User.findOne({ email: emailLowerCase }).exec();
+        //const emailLowerCase = email.toLowerCase();
+        const userStore = await User.findOne({ phone:phone}).exec();
         if (!userStore){
             throw new Error("El usuario no existe");
         }
@@ -65,9 +87,9 @@ const login = async (req, res) => {
             throw new Error("Usuario no autorizado o no activo");
         }
         res.status(200).send({
-            access: jwt.createAccessToken(userStore),
-            refresh: jwt.createRefreshToken(userStore),
-            rol: userStore.rol,
+            accessToken: jwt.createAccessToken(userStore),
+            refreshToken: jwt.createRefreshToken(userStore),
+            verifyCode: userStore.verifyCode,
         })
     } catch (error) {
         res.status(400).send({ msg: error.message });

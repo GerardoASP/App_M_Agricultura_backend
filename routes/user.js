@@ -17,4 +17,10 @@ router.put("/update-user/:id", userController.updateUser);
 /* http://localhost:3000/api/v1/users/1 */
 router.get("/:id", userController.getUser);
 
+/* http://localhost:3000/api/v1/users/get-user-by-verify-code/token*/
+router.get("/get-user-by-verify-code/:verifyCode",userController.getUserByVerifyCode)
+
+/* http://localhost:3000/api/v1/users/1/publications */
+router.get('/:id/publications', userController.getPublicationsOfUser);
+
 module.exports = router;
