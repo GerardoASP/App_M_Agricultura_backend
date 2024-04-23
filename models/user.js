@@ -8,6 +8,11 @@ const userSchema = mongoose.Schema({
     document_type: { type: String, require: true },
     document: { type: String, require: true, unique: true},
     active: { type: Boolean, require: true, default: false },
+    userPublications: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Publication" 
+    }],
+    verifyCode:{ type:String}
 })
 
 module.exports = mongoose.model("User",userSchema);
