@@ -3,7 +3,7 @@ const User = require("../models/user");
 const jwt = require("../utils/jwt");
 const crypto = require('crypto');
 const { transporter } = require("../config/emailService");
-const sms = require("../config/sms")
+
 
 //registro de un usuario nuevo en el sistema
 const register = async (req, res) => {
