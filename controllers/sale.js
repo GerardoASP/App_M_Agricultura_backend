@@ -1,16 +1,28 @@
 const express = require('express');
 const modelSale = require('../models/sale');
+const modelLot = require('../models/lot');
 
 /* CRUD */
 
 /*Crear una venta en la base de datos*/
 const createSale = async (req, res)=>{
     try{
-        const {nameSale,valueSale,dateSale,saleProducts} = req.body;
+        const {nameSale,quantity,unitSale,valueSale,dateSale,saleLot} = req.body;
         // console.log(req.body);
-        const newSale = new modelSale({nameSale,valueSale,dateSale,saleProducts});
+        const newSale = new modelSale({nameSale,quantity,unitSale,valueSale,dateSale,saleLot});
         // console.log(newPost);
         const savedSale = await newSale.save();
+
+        // Recupera el usuario al que deseas agregar el post
+        const lot = await modelLot.findById(saleLot);
+
+        if(saleLot != ""){
+            // Agrega el ObjectId del nuevo gasto al array correspondiente
+            lot.lotSales.push(savedSale._id);
+        
+            // Guarda el lote
+            await lot.save();
+        }
         // res.status(201).json({message: "Post created"});
         return res.status(201).json(savedSale);
     }catch(error){
@@ -46,9 +58,9 @@ const getSale = async (req, res) => {
 /*Actualizar la información de una venta en la base de datos */
 const updateSale = async (req,res)=>{
     const { id } = req.params;
-    const { nameSale,valueSale,dateSale,saleProducts } = req.body;
+    const { nameSale,quantity,unitSale,valueSale,dateSale,saleLot } = req.body;
     try {
-      const sale = await modelSale.findByIdAndUpdate(id, { nameSale,valueSale,dateSale,saleProducts }, { new: true });
+      const sale = await modelSale.findByIdAndUpdate(id, { nameSale,quantity,unitSale,valueSale,dateSale,saleLot }, { new: true });
       return res.status(200).send(sale);
     } catch (error) {
       console.error(error);
@@ -58,9 +70,18 @@ const updateSale = async (req,res)=>{
 
 /*Eliminar una venta en especifico de la base de datos */
 const removeSale = async(req, res)=>{
+    const lotId = req.body.lotId;
     try{
         const {id} = req.params;
         const saleDelete = await modelSale.findByIdAndDelete(id)
+
+        // Encuentra el usuario al que deseas agregar el post
+        const lot = await modelLot.findById(lotId);
+        
+        // Elimina el post del array 'posts' del usuario
+        lot.lotSales.pull(id);
+        await lot.save();
+
         if(saleDelete === null) {
             return res.status(404).json({message: "Sale not found"});
         }

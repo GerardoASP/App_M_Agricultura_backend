@@ -17,4 +17,10 @@ router.put("/update-farm/:id", farmController.updateFarm);
 /* http://localhost:3000/api/v1/farms/1 */
 router.get("/:id", farmController.getFarm);
 
+/* http://localhost:3000/api/v1/farms/1/users */
+router.get('/:id/users', farmController.getUserOfFarm);
+
+/* http://localhost:3000/api/v1/farms/1/lots */
+router.get('/:id/lots', farmController.getLotsOfFarm);
+
 module.exports = router;
