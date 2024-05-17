@@ -218,7 +218,7 @@ const getFarmOfLot = async (req, res) => {
   
       // Verificamos que haya IDs de lotes
       if (!spentsIds || spentsIds.length === 0) {
-        return res.status(404).json({ message: "No spents found for this lot" });
+        return res.status(404).json(0);
       }
   
       // Buscamos los productos en la base de datos utilizando los IDs
@@ -227,7 +227,7 @@ const getFarmOfLot = async (req, res) => {
       //console.log("Publications found:", publications);
       // Verificamos si se encontraron productos
       if (!spents || spents.length === 0) {
-        return res.status(404).json({ message: "No spents found for the given IDs" });
+        return res.status(404).json(0);
       }
 
       //const sumSpents = spents.map(spentIterator );
@@ -298,7 +298,7 @@ const getFarmOfLot = async (req, res) => {
   
       // Verificamos que haya IDs de lotes
       if (!salesIds || salesIds.length === 0) {
-        return res.status(404).json({ message: "No sales found for this lot" });
+        return res.status(404).json(0);
       }
   
       // Buscamos los productos en la base de datos utilizando los IDs
@@ -307,7 +307,7 @@ const getFarmOfLot = async (req, res) => {
       //console.log("Publications found:", publications);
       // Verificamos si se encontraron productos
       if (!sales || sales.length === 0) {
-        return res.status(404).json({ message: "No sales found for the given IDs" });
+        return res.status(404).json(0);
       }
 
       //const sumSpents = spents.map(spentIterator );

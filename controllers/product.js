@@ -176,7 +176,7 @@ const getLotOfProduct = async (req, res) => {
   
       // Verificamos que haya IDs de lotes
       if (!spentsIds || spentsIds.length === 0) {
-        return res.status(404).json({ message: "No spents found for this product" });
+        return res.status(404).json(0);
       }
   
       // Buscamos los productos en la base de datos utilizando los IDs
@@ -185,7 +185,7 @@ const getLotOfProduct = async (req, res) => {
       //console.log("Publications found:", publications);
       // Verificamos si se encontraron productos
       if (!spents || spents.length === 0) {
-        return res.status(404).json({ message: "No spents found for the given IDs" });
+        return res.status(404).json(0);
       }
 
       //const sumSpents = spents.map(spentIterator );
