@@ -1,8 +1,8 @@
 const express = require('express');
 const modelPublication = require('../models/publication');
 const modelUser = require('../models/user');
-const modelImage = require('../models/image');
-const { GridFsStorage } = require("multer-gridfs-storage")
+
+
 const path = require('path');
 const { MongoClient, GridFSBucket, ObjectID } = require("mongodb");
 
@@ -19,35 +19,6 @@ const allowedImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp",
 const allowedVideoTypes = ["video/mp4", "video/webm", "video/ogg", "video/x-msvideo", "video/quicktime"];
 
 let date = Date.now();
-
-// Create a storage object with a given configuration
-const storage = new GridFsStorage({
-    url: url,
-    file: (req, file) => {
-      //If it is an image, save to photos bucket
-      console.log(file)
-      if (allowedImageTypes.includes(file.mimetype)) {
-        return {
-          bucketName: "photos",
-          filename: `${date}-${file.originalname}`
-        }
-      }else if(allowedVideoTypes.includes(file.mimetype)){
-
-      } /* else {
-        //Otherwise save to default bucket
-        return `${Date.now()}_${file.originalname}`
-      } */
-    }
-});
-
-const storageLocal = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/publications/'); // Directorio donde se guardarán las imágenes
-    },
-    filename: function (req, file, cb) {
-      cb(null, date + '-' + file.originalname); // Nombre del archivo
-    }
-});
 
 const app = express();
 
