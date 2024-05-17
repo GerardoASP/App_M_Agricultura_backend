@@ -166,7 +166,7 @@ const updatePublication = async (req, res) => {
         const title = req.body.title;
         const description = req.body.description;
         const typePublication = req.body.typePublication;
-
+        const avatar = req.body.avatar;
         console.log(publicationId);
 
         // Buscar el post por su ID
@@ -178,7 +178,7 @@ const updatePublication = async (req, res) => {
         }
 
         // Actualizar el campo 'active' del post
-        publication.avatar.push(image);
+        publication.avatar = avatar
         publication.title = title;
         publication.description = description;
         publication.typePublication = typePublication;

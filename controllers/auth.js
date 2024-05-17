@@ -37,7 +37,7 @@ const register = async (req, res) => {
         document,
         email: email.toLowerCase(),
         password: hashPassword,
-        active: false,
+        active: true,
         verifyCode
     });
 
@@ -57,7 +57,6 @@ const register = async (req, res) => {
         } else {
             console.log('Email sent: ' + info.response);
         }
-        sms.sendSMS(user.phone);
     });
     } catch (error) {
         res.status(400).send({ msg: "Error al crear el usuario", error: error.message || "Error desconocido" });

@@ -1,6 +1,7 @@
 const express = require('express');
 const modelUser = require('../models/user');
 const modelPublication = require('../models/publication');
+const modelFarm = require('../models/farm');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 /* CRUD */
@@ -8,7 +9,7 @@ const mongoose = require('mongoose');
 /*Crear un gasto en la base de datos*/
 const createUser = async (req, res) => {
     try {
-        const { firstname, lastname, email, phone, password, document_type, document,publications } = req.body;
+        const { firstname, lastname, email, phone, password, document_type, document,userPublications,userFarms } = req.body;
 
         // Generar un hash de la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -21,7 +22,8 @@ const createUser = async (req, res) => {
             password: hashedPassword, // Guardar la contraseña cifrada
             document_type,
             document,
-            publications
+            userPublications,
+            userFarms
         });
 
         const savedUser = await newUser.save();
@@ -59,9 +61,9 @@ const getUser = async (req, res) => {
 /*Actualizar la información de un gasto en la base de datos */
 const updateUser = async (req,res)=>{
     const { id } = req.params;
-    const { firstname,lastname,email,phone,password,document_type,document,publications } = req.body;
+    const { firstname,lastname,email,phone,password,document_type,document,userPublications,userFarms } = req.body;
     try {
-      const user = await modelUser.findByIdAndUpdate(id, { firstname,lastname,email,phone,password,document_type,document,publications }, { new: true });
+      const user = await modelUser.findByIdAndUpdate(id, { firstname,lastname,email,phone,password,document_type,document,userPublications,userFarms }, { new: true });
       return res.status(200).send(user);
     } catch (error) {
       console.error(error);
@@ -136,6 +138,45 @@ const getPublicationsOfUser = async (req, res) => {
   }
 };
 
+const getFarmsOfUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Buscamos el usuario en la base de datos utilizando su ID
+    const user = await modelUser.findById(id);
+
+    // Verificamos si el usuario existe
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Obtenemos los IDs de las fincas asociadas al usuario
+    const farmsIds = user.userFarms.map(id => new mongoose.Types.ObjectId(id));
+    //console.log(publicationIds)
+
+    // Verificamos que haya IDs de fincas
+    if (!farmsIds || farmsIds.length === 0) {
+      return res.status(404).json({ message: "No farms found for this user" });
+    }
+
+    // Buscamos las fincas en la base de datos utilizando los IDs
+    const farms = await modelFarm.find({ _id: { $in: farmsIds } });
+
+    //console.log("Publications found:", publications);
+    // Verificamos si se encontraron fincas
+    if (!farms || farms.length === 0) {
+      return res.status(404).json({ message: "No farms found for the given IDs" });
+    }
+
+    // Retornamos las fincas encontradas
+    res.status(200).json(farms);
+  } catch (error) {
+    // Manejamos errores
+    console.error("Error fetching user publications:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 /*Zona Exportación de Funciones */
 
 module.exports = {
@@ -145,5 +186,6 @@ module.exports = {
     updateUser,
     removeUser,
     getUserByVerifyCode,
-    getPublicationsOfUser
+    getPublicationsOfUser,
+    getFarmsOfUser
 }

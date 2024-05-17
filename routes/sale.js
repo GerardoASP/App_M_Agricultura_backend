@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const saleController = require("../controllers/sale")
 
-/* http://localhost:3000/api/v1/sale/new-sale */
+/* http://localhost:3000/api/v1/sales/new-sale */
 router.post("/new-sale", saleController.createSale);
 
 /* http://localhost:3000/api/v1/sales */

@@ -17,4 +17,13 @@ router.put("/update-product/:id", productController.updateProduct);
 /* http://localhost:3000/api/v1/products/1 */
 router.get("/:id", productController.getProduct);
 
+/* http://localhost:3000/api/v1/products/1/lots */
+router.get('/:id/lots', productController.getLotOfProduct);
+
+/* http://localhost:3000/api/v1/products/1/spents */
+router.get('/:id/spents', productController.getSpentsOfProduct);
+
+/* http://localhost:3000/api/v1/products/1/total-value-invested */
+router.get('/:id/total-value-invested', productController.getSumSpentsOfProduct);
+
 module.exports = router;

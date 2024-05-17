@@ -23,4 +23,7 @@ router.get("/get-user-by-verify-code/:verifyCode",userController.getUserByVerify
 /* http://localhost:3000/api/v1/users/1/publications */
 router.get('/:id/publications', userController.getPublicationsOfUser);
 
+/* http://localhost:3000/api/v1/users/1/farms */
+router.get('/:id/farms', userController.getFarmsOfUser);
+
 module.exports = router;

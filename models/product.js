@@ -4,18 +4,18 @@ const productSchema = mongoose.Schema({
     purpose : {type:String, require:true},
     variety: { type: String, require: true},
     weather: { type: String, require: true},
-    postHarvestTime: { type: Number, require: true },
-    preHarvestTime: { type: Number, require: true },
-    weight: { type: Number, require: true},
-    volume: { type: Number, require: true},
-    date_sowing:{type:Date, require:true},
-    productLots: [{
+    postHarvestTime: { type: String, require: true },
+    harvestTime: { type: String, require: true },
+    weight: { type: String, require: true},
+    volume: { type: String, require: true},
+    sowingDate:{type:Date, default:Date.now()},
+    productLot: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'lot'
-    }],
-    productSales: [{
+    },
+    productSpents: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'sale'
+        ref: 'spent'
     }]
 })
 

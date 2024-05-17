@@ -12,6 +12,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Publication" 
     }],
+    userFarms:[{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Farm"
+    }],
     verifyCode:{ type:String}
 })
 
